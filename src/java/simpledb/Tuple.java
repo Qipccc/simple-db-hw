@@ -2,6 +2,7 @@ package simpledb;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -13,6 +14,9 @@ public class Tuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private TupleDesc tupleDesc;
+    private RecordId recordid;
+    private ArrayList<Field> fields;
     /**
      * Create a new tuple with the specified schema (type).
      *
@@ -21,7 +25,8 @@ public class Tuple implements Serializable {
      *            instance with at least one field.
      */
     public Tuple(TupleDesc td) {
-        // some code goes here
+        this.tupleDesc = td;
+        this.fields = new ArrayList<>(td.getSize());
     }
 
     /**
@@ -29,7 +34,7 @@ public class Tuple implements Serializable {
      */
     public TupleDesc getTupleDesc() {
         // some code goes here
-        return null;
+        return this.tupleDesc;
     }
 
     /**
@@ -38,7 +43,7 @@ public class Tuple implements Serializable {
      */
     public RecordId getRecordId() {
         // some code goes here
-        return null;
+        return this.recordid;
     }
 
     /**
@@ -49,6 +54,7 @@ public class Tuple implements Serializable {
      */
     public void setRecordId(RecordId rid) {
         // some code goes here
+        this.recordid = rid;
     }
 
     /**
@@ -61,6 +67,7 @@ public class Tuple implements Serializable {
      */
     public void setField(int i, Field f) {
         // some code goes here
+        this.fields.set(i, f);
     }
 
     /**
@@ -71,7 +78,7 @@ public class Tuple implements Serializable {
      */
     public Field getField(int i) {
         // some code goes here
-        return null;
+        return this.fields.get(i);
     }
 
     /**
@@ -84,7 +91,12 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         // some code goes here
-        throw new UnsupportedOperationException("Implement this");
+        StringBuffer buffer = new StringBuffer();
+        for(Field f : this.fields){
+            buffer.append(f.toString());
+            buffer.append("\t");
+        }
+        return buffer.toString();
     }
 
     /**
@@ -94,7 +106,7 @@ public class Tuple implements Serializable {
     public Iterator<Field> fields()
     {
         // some code goes here
-        return null;
+        return this.fields.iterator();
     }
 
     /**
@@ -103,5 +115,6 @@ public class Tuple implements Serializable {
     public void resetTupleDesc(TupleDesc td)
     {
         // some code goes here
+        this.tupleDesc = td;
     }
 }

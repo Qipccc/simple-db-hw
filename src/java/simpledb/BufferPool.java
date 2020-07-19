@@ -26,6 +26,10 @@ public class BufferPool {
     constructor instead. */
     public static final int DEFAULT_PAGES = 50;
 
+    private ConcurrentHashMap<PageId, Page>pages;
+
+
+
     /**
      * Creates a BufferPool that caches up to numPages pages.
      *
@@ -33,6 +37,7 @@ public class BufferPool {
      */
     public BufferPool(int numPages) {
         // some code goes here
+        this.pages = new ConcurrentHashMap<>(numPages);
     }
     
     public static int getPageSize() {
@@ -67,7 +72,15 @@ public class BufferPool {
     public  Page getPage(TransactionId tid, PageId pid, Permissions perm)
         throws TransactionAbortedException, DbException {
         // some code goes here
-        return null;
+        // 对pid 的理解，是一片page 区域的id 
+        Page result = this.pages.get(pid);
+        // 需要判断该数据是否在 bufferpool（内存 memory） 中，如果不在就需要从 磁盘(disk)中读取
+        if(result == null){
+            DbFile file = Database.getCatalog().getDatabaseFile(pid.getTableId());
+            result = file.readPage(pid);
+            this.pages.put(pid, result);
+        }
+        return result;
     }
 
     /**
